@@ -19,7 +19,7 @@
             <router-link to="/editStatue">Szerkesztés</router-link>
           </td>
           <td>
-            <button>Törlés</button>
+            <button @click="deleteStatue(s.id)">Törlés</button>
           </td>
         </tr>
         <tr>
@@ -40,14 +40,26 @@ export default {
   components: {},
   data() {
     return {
-      statues: Array
+      statues: Array,
+      newStatue: {
+        person: "",
+        height: 0,
+        price: 0
+      }
     }
   },
   methods: {
     async getStatues() {
-      const response = await fetch("http://127.0.0.1:8000/api/statues")
-      const data = await response.json()
-      this.statues = data
+      fetch("http://127.0.0.1:8000/api/statues")
+        .then( response => response.json() )
+        .then( response => this.statues = response)
+    },
+    async deleteStatue(id) {
+      fetch(`http://127.0.0.1:8000/api/statues/${id}`, {
+        method: 'DELETE'
+      }).then( response => response.json() )
+
+      await this.getStatues()
     }
   },
   mounted() {
