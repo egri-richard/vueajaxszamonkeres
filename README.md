@@ -1,4 +1,4 @@
-# [Név]
+# Egri Dániel Richárd
 
 ## Hogyan kezdj neki?
 
