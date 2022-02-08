@@ -16,15 +16,24 @@
           <td>{{ s.height }}</td>
           <td>{{ s.price }}</td>
           <td>
-            <router-link to="/editStatue">Szerkesztés</router-link>
+            <button @click="editStatue(s)">Szerkesztés</button>
           </td>
           <td>
             <button @click="deleteStatue(s.id)">Törlés</button>
           </td>
         </tr>
         <tr>
-          <td colspan="3">
-            <router-link to="/createStatue">Új Szobor</router-link>
+          <td>
+            <input type="text" name="person" v-model="newStatue.person" />
+          </td>
+          <td>
+            <input type="number" name="height" v-model="newStatue.height" />
+          </td>
+          <td>
+            <input type="number" name="price" v-model="newStatue.price" />
+          </td>
+          <td>
+            <button @click="postStatue">Új Szobor</button>
           </td>
         </tr>
       </tbody>
@@ -33,8 +42,6 @@
 </template>
 
 <script>
-
-
 export default {
   name: 'App',
   components: {},
@@ -42,6 +49,7 @@ export default {
     return {
       statues: Array,
       newStatue: {
+        id: 0,
         person: "",
         height: 0,
         price: 0
@@ -55,12 +63,25 @@ export default {
         .then( response => this.statues = response)
     },
     async deleteStatue(id) {
-      fetch(`http://127.0.0.1:8000/api/statues/${id}`, {
+      await fetch(`http://127.0.0.1:8000/api/statues/${id}`, {
         method: 'DELETE'
-      }).then( response => response.json() )
+      })
+
+      await this.getStatues() 
+    },
+    async postStatue() {
+      await fetch("http://127.0.0.1:8000/api/statues", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(this.newStatue)
+      })
 
       await this.getStatues()
-    }
+    },
+    async editStatue()
   },
   mounted() {
     this.getStatues()
