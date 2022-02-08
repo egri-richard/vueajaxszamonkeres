@@ -24,13 +24,13 @@
         </tr>
         <tr>
           <td>
-            <input type="text" name="person" v-model="newStatue.person" />
+            <input class="form-control" type="text" name="person" v-model="newStatue.person" />
           </td>
           <td>
-            <input type="number" name="height" v-model="newStatue.height" />
+            <input class="form-control" type="number" name="height" v-model="newStatue.height" />
           </td>
           <td>
-            <input type="number" name="price" v-model="newStatue.price" />
+            <input class="form-control" type="number" name="price" v-model="newStatue.price" />
           </td>
           <td>
             <button class="btn btn-primary" @click="postStatue" v-if="!editing">Új Szobor</button>
