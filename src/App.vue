@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>Szobrok</h1>
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>Személy</th>
@@ -16,10 +16,10 @@
           <td>{{ s.height }}</td>
           <td>{{ s.price }}</td>
           <td>
-            <button @click="editStatue(s)">Szerkesztés</button>
+            <button class="btn btn-success" @click="startEdit(s)">Szerkesztés</button>
           </td>
           <td>
-            <button @click="deleteStatue(s.id)">Törlés</button>
+            <button class="btn btn-danger" @click="deleteStatue(s.id)">Törlés</button>
           </td>
         </tr>
         <tr>
@@ -33,7 +33,9 @@
             <input type="number" name="price" v-model="newStatue.price" />
           </td>
           <td>
-            <button @click="postStatue">Új Szobor</button>
+            <button class="btn btn-primary" @click="postStatue" v-if="!editing">Új Szobor</button>
+            <button class="btn btn-success" @click="editStatue" v-if="editing">Mentés</button>
+            <button class="btn btn-danger" @click="cancelEdit" v-if="editing">Kész</button>
           </td>
         </tr>
       </tbody>
@@ -47,6 +49,7 @@ export default {
   components: {},
   data() {
     return {
+      editing: false,
       statues: Array,
       newStatue: {
         id: 0,
@@ -81,7 +84,34 @@ export default {
 
       await this.getStatues()
     },
-    async editStatue()
+    startEdit(s) {
+      this.editing = true
+
+      this.newStatue.id = s.id
+      this.newStatue.person = s.person
+      this.newStatue.height = s.height
+      this.newStatue.price = s.price
+    },
+    async editStatue() {
+      await fetch(`http://127.0.0.1:8000/api/statues/${this.newStatue.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json", 
+        },
+        body: JSON.stringify(this.newStatue)
+      })
+
+      await this.getStatues()
+    },
+    cancelEdit() {
+      this.editing = false
+
+      this.newStatue.id = 0
+      this.newStatue.person = ""
+      this.newStatue.height = 0
+      this.newStatue.price = 0
+    }
   },
   mounted() {
     this.getStatues()
